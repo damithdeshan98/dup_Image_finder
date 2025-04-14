@@ -1,1 +1,1 @@
-# dup_Image_finder
+# Duplicate Image Finder
