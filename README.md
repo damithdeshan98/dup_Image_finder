@@ -1,4 +1,4 @@
-# 🖼️ Duplicate Image Finder
+# 🖼️ Duplicate Image Finder v1.0
 
 A Python-based desktop application that helps you quickly and efficiently find and remove duplicate images from a selected directory. This tool uses image hashing techniques to detect similar or identical images—even if they are resized or slightly modified.
 
