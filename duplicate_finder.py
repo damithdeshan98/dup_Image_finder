@@ -11,7 +11,7 @@ from send2trash import send2trash
 class DuplicateImageFinderAppFinal:
     def __init__(self, root):
         self.root = root
-        self.root.title("Duplicate Image Finder v3.0")
+        self.root.title("Duplicate Image Finder v1.0")
         self.root.geometry("1100x650")
 
         # --- GUI Frames ---
