@@ -57,6 +57,9 @@ class DuplicateImageFinderAppFinal:
         self.image_preview_label.pack(fill="both", expand=True, pady=5)
         self.image_preview_label.image = None
 
+        self.select_all_button = ttk.Button(bottom_frame, text="Select All Duplicates", command=self.select_all_duplicates, state=tk.DISABLED)
+        self.select_all_button.pack(pady=(5, 0))
+
         self.delete_button = ttk.Button(bottom_frame, text="Delete Selected Duplicates", command=self.delete_selected_duplicates_from_tree, state=tk.DISABLED)
         self.delete_button.pack(pady=5)
 
@@ -91,6 +94,7 @@ class DuplicateImageFinderAppFinal:
         self.scan_button.config(state=tk.DISABLED)
         self.browse_button.config(state=tk.DISABLED)
         self.delete_button.config(state=tk.DISABLED)
+        self.select_all_button.config(state=tk.DISABLED)
         self.status_var.set("Scanning images...")
         self.root.update_idletasks()
 
@@ -117,8 +121,10 @@ class DuplicateImageFinderAppFinal:
         self.image_hashes = {}
         image_extensions = ('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')
         files_to_process = [
-            os.path.normpath(os.path.join(folder_path, f)) for f in os.listdir(folder_path)
-            if f.lower().endswith(image_extensions) and os.path.isfile(os.path.join(folder_path, f))
+            os.path.normpath(os.path.join(root, f))
+            for root, dirs, files in os.walk(folder_path)
+            for f in files
+            if f.lower().endswith(image_extensions)
         ]
 
         for i, filepath in enumerate(files_to_process, start=1):
@@ -159,9 +165,11 @@ class DuplicateImageFinderAppFinal:
         if duplicate_count > 0:
             self.status_var.set(f"Scan Complete! Found {duplicate_count} duplicates in {set_count} sets.")
             self.delete_button.config(state=tk.NORMAL)
+            self.select_all_button.config(state=tk.NORMAL)
         else:
             self.status_var.set("Scan Complete! No duplicates found.")
             self.delete_button.config(state=tk.DISABLED)
+            self.select_all_button.config(state=tk.DISABLED)
 
         self.scan_button.config(state=tk.NORMAL)
         self.browse_button.config(state=tk.NORMAL)
@@ -210,6 +218,12 @@ class DuplicateImageFinderAppFinal:
             label_widget.config(image='', text=f"Preview Error:\n{filename}\n({e})")
             label_widget.image = None
             print(f"Error creating preview for {filepath}: {e}")
+
+    def select_all_duplicates(self):
+        self.tree.selection_remove(*self.tree.selection())
+        for parent in self.tree.get_children(""):
+            for child in self.tree.get_children(parent):
+                self.tree.selection_add(child)
 
     def delete_selected_duplicates_from_tree(self):
         selected_items = self.tree.selection()
